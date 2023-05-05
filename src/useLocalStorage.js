@@ -1,18 +1,19 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
+
+const getToken = (key) => localStorage.getItem(key) || null
 
 export function useLocalStorage(key) {
-  const [token, setToken] = useState(
-    localStorage.getItem(key) || ''
-  )
+  const [token, setToken] = useState(() => getToken(key))
 
-  function setItem(data) {
+  const setItem = useCallback((data) => {
     localStorage.setItem(key, data)
     setToken(data)
-  }
+  })
 
   function removeItem() {
     localStorage.removeItem(key)
-    setToken('')
+    setToken(null)
   }
+
   return [token, { setItem, removeItem }]
 }
